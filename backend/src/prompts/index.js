@@ -1,11 +1,12 @@
-import aiCompletionV1 from './templates/ai.completion.v1.js';
-import resumeAnalysisV1 from './templates/resume.analysis.v1.js';
-import resumeExtractionV1 from './templates/resume.extraction.v1.js';
-import resumeWeaknessesV1 from './templates/resume.weaknesses.v1.js';
-import jobDescriptionAnalysisV1 from './templates/jobDescription.analysis.v1.js';
-import interviewQuestionsV1 from './templates/interview.questions.v1.js';
-import interviewAnswerEvaluationV1 from './templates/interview.answer.evaluation.v1.js';
-import interviewFollowupV1 from './templates/interview.followup.v1.js';
+import aiCompletionV1 from "./templates/ai.completion.v1.js";
+import resumeAnalysisV1 from "./templates/resume.analysis.v1.js";
+import resumeExtractionV1 from "./templates/resume.extraction.v1.js";
+import resumeWeaknessesV1 from "./templates/resume.weaknesses.v1.js";
+import jobDescriptionAnalysisV1 from "./templates/jobDescription.analysis.v1.js";
+import interviewQuestionsV1 from "./templates/interview.questions.v1.js";
+import interviewAnswerEvaluationV1 from "./templates/interview.answer.evaluation.v1.js";
+import interviewFollowupV1 from "./templates/interview.followup.v1.js";
+import interviewHintV1 from "./templates/interview.hint.v1.js";
 
 const promptTemplates = [
   aiCompletionV1,
@@ -16,11 +17,12 @@ const promptTemplates = [
   interviewQuestionsV1,
   interviewAnswerEvaluationV1,
   interviewFollowupV1,
+  interviewHintV1,
 ];
 
 const registry = promptTemplates.reduce((map, template) => {
-  const key = String(template.key || '').trim();
-  const version = String(template.version || '').trim();
+  const key = String(template.key || "").trim();
+  const version = String(template.version || "").trim();
 
   if (!key || !version) return map;
 
@@ -39,9 +41,11 @@ const registry = promptTemplates.reduce((map, template) => {
 
 const latestVersion = Object.fromEntries(
   Object.entries(registry).map(([key, versions]) => {
-    const sortedVersions = Object.keys(versions).sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
+    const sortedVersions = Object.keys(versions).sort((a, b) =>
+      a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" }),
+    );
     return [key, versions[sortedVersions[sortedVersions.length - 1]]];
-  })
+  }),
 );
 
 export function getPromptKeys() {
@@ -49,15 +53,17 @@ export function getPromptKeys() {
 }
 
 export function getPromptVersions(key) {
-  const normalizedKey = String(key || '').trim();
+  const normalizedKey = String(key || "").trim();
   if (!normalizedKey || !registry[normalizedKey]) {
     return [];
   }
-  return Object.keys(registry[normalizedKey]).sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
+  return Object.keys(registry[normalizedKey]).sort((a, b) =>
+    a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" }),
+  );
 }
 
 export function getPromptTemplate(key, version) {
-  const normalizedKey = String(key || '').trim();
+  const normalizedKey = String(key || "").trim();
   if (!normalizedKey || !registry[normalizedKey]) {
     return null;
   }

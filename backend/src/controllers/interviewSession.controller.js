@@ -14,9 +14,14 @@ import {
   getCurrentQuestion,
   advanceToNextQuestion,
   assertSessionIsAnswerable,
+  recordHintUsage,
   InvalidTransitionError,
 } from "../services/interview/session.service.js";
 import { generateFollowUpQuestion } from "../services/interview/followUpEngine.service.js";
+import {
+  generateHint,
+  getMaxHintLevel,
+} from "../services/interview/hint.service.js";
 
 const allowedInterviewTypes = [
   "technical",
@@ -461,5 +466,73 @@ export async function getInterviewHistory(req, res) {
   } catch (err) {
     console.error("Get interview history error", err);
     return error(res, 500, "Failed to retrieve interview history");
+  }
+}
+
+// ---------------------------------------------------------------------------
+// T-054: Hint engine (practice mode)
+// ---------------------------------------------------------------------------
+
+export async function requestInterviewHint(req, res) {
+  try {
+    const userId = req.user?._id;
+    if (!userId) return error(res, 401, "Unauthenticated");
+
+    const { id, questionId } = req.params;
+    if (!id || !questionId)
+      return error(
+        res,
+        422,
+        "Interview session id and question id are required",
+      );
+
+    const session = await getInterviewSessionById(String(userId), id);
+    if (!session) return error(res, 404, "Interview session not found");
+
+    if (!session.practiceMode) {
+      return error(
+        res,
+        403,
+        "Hints are only available in practice mode for this session",
+      );
+    }
+
+    const question = session.questions?.find(
+      (entry) => String(entry.questionId) === String(questionId),
+    );
+    if (!question) return error(res, 404, "Question not found in this session");
+
+    const hintsUsed = question.hints?.length || 0;
+    if (hintsUsed >= getMaxHintLevel()) {
+      return success(
+        res,
+        { hints: question.hints, hintsUsed },
+        "No more hints available for this question",
+      );
+    }
+
+    const hint = await generateHint({
+      role: session.role,
+      type: session.type,
+      difficulty: session.difficulty,
+      currentQuestion: question.prompt,
+      answer: question.answer?.response || req.body?.answer || "",
+      topic: question.topic,
+      hintLevel: hintsUsed + 1,
+    });
+
+    const updatedSession = await recordHintUsage(
+      String(userId),
+      id,
+      questionId,
+      hint,
+    );
+    if (!updatedSession)
+      return error(res, 404, "Interview session or question not found");
+
+    return success(res, { hint, session: updatedSession }, "Hint generated");
+  } catch (err) {
+    console.error("Request interview hint error", err);
+    return error(res, 500, "Failed to generate hint");
   }
 }

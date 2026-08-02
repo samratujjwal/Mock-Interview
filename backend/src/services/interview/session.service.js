@@ -266,6 +266,30 @@ export async function submitInterviewAnswer(
 }
 
 // ---------------------------------------------------------------------------
+// T-054: Hint engine persistence
+// ---------------------------------------------------------------------------
+
+export async function recordHintUsage(userId, sessionId, questionId, hint) {
+  if (!isValidObjectId(sessionId) || !questionId) return null;
+
+  return InterviewSession.findOneAndUpdate(
+    { _id: sessionId, userId, "questions.questionId": questionId },
+    {
+      $push: {
+        "questions.$.hints": {
+          level: hint.level,
+          text: hint.text,
+          requestedAt: new Date(),
+        },
+      },
+    },
+    { new: true },
+  )
+    .lean()
+    .exec();
+}
+
+// ---------------------------------------------------------------------------
 // T-055: Interview lifecycle (state machine + question navigation)
 // ---------------------------------------------------------------------------
 

@@ -15,6 +15,7 @@ import {
   finishInterview,
   cancelInterview,
   getInterviewHistory,
+  requestInterviewHint,
 } from "../controllers/interviewSession.controller.js";
 import {
   createTemplate,
@@ -57,6 +58,12 @@ router.post(
   "/:id/questions/:questionId/answers",
   requireAuth,
   submitInterviewQuestionAnswer,
+);
+router.post(
+  "/:id/questions/:questionId/hint",
+  requireAuth,
+  interviewRateLimit,
+  requestInterviewHint,
 );
 
 export default router;
