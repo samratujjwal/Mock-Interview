@@ -5,14 +5,21 @@ import cookieParser from "./middleware/cookieParser.js";
 import requestId from "./middleware/requestId.js";
 import errorHandler from "./middleware/errorHandler.js";
 import AppError from "./utils/AppError.js";
+import {
+  helmetMiddleware,
+  corsOptions,
+  sanitizeInput,
+} from "./middleware/security.middleware.js";
 
 const app = express();
 
 // Global middleware
 app.use(requestId);
-app.use(cors());
+app.use(helmetMiddleware);
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(sanitizeInput);
 
 // Simple cookie parser (lightweight, avoids adding dependency)
 app.use(cookieParser);

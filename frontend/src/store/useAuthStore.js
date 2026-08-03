@@ -1,11 +1,11 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 export const useAuthStore = create((set) => ({
   user: null,
   accessToken: null,
-  loading: false,
-  setUser: (user, accessToken) => set({ user, accessToken }),
-  clearUser: () => set({ user: null, accessToken: null }),
+  loading: true,
+  setUser: (user, accessToken) => set({ user, accessToken, loading: false }),
+  clearUser: () => set({ user: null, accessToken: null, loading: false }),
   setLoading: (loading) => set({ loading }),
 }));
 

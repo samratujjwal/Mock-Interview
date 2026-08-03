@@ -1,11 +1,11 @@
-import mongoose from 'mongoose';
-import { softDeletePlugin } from './plugins/softDeletePlugin.js';
+import mongoose from "mongoose";
+import { softDeletePlugin } from "./plugins/softDeletePlugin.js";
 
 const interviewTemplateSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       default: null,
       index: true,
     },
@@ -27,22 +27,22 @@ const interviewTemplateSchema = new mongoose.Schema(
     type: {
       type: String,
       trim: true,
-      enum: ['technical', 'behavioral', 'system_design', 'mixed', 'hr'],
-      default: 'technical',
+      enum: ["technical", "behavioral", "system_design", "mixed", "hr"],
+      default: "technical",
       index: true,
     },
     difficulty: {
       type: String,
       trim: true,
-      enum: ['easy', 'medium', 'hard'],
-      default: 'medium',
+      enum: ["easy", "medium", "hard"],
+      default: "medium",
       index: true,
     },
     companyMode: {
       type: String,
       trim: true,
-      enum: ['startup', 'product', 'FAANG', 'scale-up'],
-      default: 'product',
+      enum: ["startup", "product", "faang", "scale-up"],
+      default: "product",
       index: true,
     },
     topic: {
@@ -68,8 +68,8 @@ const interviewTemplateSchema = new mongoose.Schema(
     status: {
       type: String,
       trim: true,
-      enum: ['active', 'inactive'],
-      default: 'active',
+      enum: ["active", "inactive"],
+      default: "active",
       index: true,
     },
     metadata: {
@@ -79,7 +79,7 @@ const interviewTemplateSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-    collection: 'interview_templates',
+    collection: "interview_templates",
     toJSON: {
       virtuals: true,
       transform: (_doc, ret) => {
@@ -87,11 +87,12 @@ const interviewTemplateSchema = new mongoose.Schema(
         return ret;
       },
     },
-  }
+  },
 );
 
 interviewTemplateSchema.plugin(softDeletePlugin);
 interviewTemplateSchema.index({ createdAt: -1, title: 1 });
 
 export const InterviewTemplate =
-  mongoose.models.InterviewTemplate || mongoose.model('InterviewTemplate', interviewTemplateSchema);
+  mongoose.models.InterviewTemplate ||
+  mongoose.model("InterviewTemplate", interviewTemplateSchema);

@@ -1,8 +1,8 @@
-import dotenv from "dotenv";
+import "./config/env.js";
+import http from "node:http";
 import app from "./app.js";
 import { connectDB } from "./database/connection.js";
-
-dotenv.config();
+import { initSocket } from "./socket/index.js";
 
 const PORT = process.env.PORT || 5000;
 
@@ -12,8 +12,13 @@ const start = async () => {
   try {
     await connectDB();
 
-    server = app.listen(PORT, () => {
-      console.log(`Server running in ${process.env.NODE_ENV || "development"} mode on port ${PORT}`);
+    const httpServer = http.createServer(app);
+    initSocket(httpServer);
+
+    server = httpServer.listen(PORT, () => {
+      console.log(
+        `Server running in ${process.env.NODE_ENV || "development"} mode on port ${PORT}`,
+      );
     });
 
     // Handle unhandled promise rejections

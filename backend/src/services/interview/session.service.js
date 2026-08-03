@@ -66,6 +66,8 @@ export async function createInterviewSession(userId, data = {}) {
     initialMemory,
   );
 
+  const initialStatus = String(data.status || "Pending").trim();
+
   const payload = {
     userId,
     resumeId: data.resumeId || null,
@@ -76,7 +78,9 @@ export async function createInterviewSession(userId, data = {}) {
     difficulty: normalizeEnumValue(data.difficulty, "medium"),
     companyMode: normalizeEnumValue(data.companyMode, "product"),
     personality: normalizeEnumValue(data.personality, "professional"),
-    status: String(data.status || "Pending").trim(),
+    practiceMode: Boolean(data.practiceMode),
+    status: initialStatus,
+    startedAt: initialStatus === "Active" ? new Date() : null,
     memory: hydratedMemory,
     questions: initialQuestions,
   };

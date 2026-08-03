@@ -30,7 +30,7 @@ const allowedInterviewTypes = [
   "mixed",
 ];
 const allowedDifficultyLevels = ["easy", "medium", "hard"];
-const allowedCompanyModes = ["startup", "product", "FAANG", "scale-up"];
+const allowedCompanyModes = ["startup", "product", "faang", "scale-up"];
 
 function success(res, data = {}, message = "Success") {
   return res.json({ success: true, message, data });
@@ -63,6 +63,7 @@ export async function createInterview(req, res) {
       type,
       difficulty,
       companyMode,
+      practiceMode,
       memory,
       questions,
     } = req.body;
@@ -132,6 +133,7 @@ export async function createInterview(req, res) {
       type: normalizedType,
       difficulty: normalizedDifficulty,
       companyMode: normalizedCompanyMode,
+      practiceMode: Boolean(practiceMode),
       memory,
       questions,
       status: "Active",
@@ -299,7 +301,7 @@ export async function submitInterviewQuestionAnswer(req, res) {
       return error(res, 404, "Interview session or question not found");
 
     const answeredQuestion = session.questions?.find(
-      (question) => String(question._id || question.id) === String(questionId),
+      (question) => String(question.questionId) === String(questionId),
     );
     const followUpQuestion = await generateFollowUpQuestion({
       role: session.role,

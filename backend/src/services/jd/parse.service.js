@@ -1,16 +1,41 @@
-import { JobDescription } from '../../models/index.js';
-import { promptService } from '../prompt.service.js';
-import { aiService } from '../ai/ai.service.js';
-import { formatAIResponse } from '../ai/response.service.js';
-import pdfParse from 'pdf-parse';
+import { JobDescription } from "../../models/index.js";
+import { promptService } from "../prompt.service.js";
+import { aiService } from "../ai/ai.service.js";
+import { formatAIResponse } from "../ai/response.service.js";
+// import pdfParse from 'pdf-parse';
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const pdfParse = require("pdf-parse");
 
-const REQUIRED_HEADINGS = [/required skills?/i, /skills? required/i, /must have/i, /qualifications?/i, /requirements?/i];
-const PREFERRED_HEADINGS = [/preferred skills?/i, /nice to have/i, /desired qualifications?/i, /preferred qualifications?/i];
-const RESPONSIBILITIES_HEADINGS = [/responsibilities?/i, /you will/i, /what you will do/i, /key responsibilities?/i, /role includes/i];
-const IDEAL_EXPERIENCE_HEADINGS = [/ideal candidate/i, /ideal experience/i, /experience required/i, /experience preferred/i];
+const REQUIRED_HEADINGS = [
+  /required skills?/i,
+  /skills? required/i,
+  /must have/i,
+  /qualifications?/i,
+  /requirements?/i,
+];
+const PREFERRED_HEADINGS = [
+  /preferred skills?/i,
+  /nice to have/i,
+  /desired qualifications?/i,
+  /preferred qualifications?/i,
+];
+const RESPONSIBILITIES_HEADINGS = [
+  /responsibilities?/i,
+  /you will/i,
+  /what you will do/i,
+  /key responsibilities?/i,
+  /role includes/i,
+];
+const IDEAL_EXPERIENCE_HEADINGS = [
+  /ideal candidate/i,
+  /ideal experience/i,
+  /experience required/i,
+  /experience preferred/i,
+];
 
 function normalizeText(value) {
-  if (!value) return '';
+  if (!value) return "";
   return String(value).trim();
 }
 
@@ -26,20 +51,41 @@ function normalizeArray(value) {
 }
 
 function normalizeExtractionPayload(payload) {
-  if (!payload || typeof payload !== 'object') {
+  if (!payload || typeof payload !== "object") {
     return {
       requiredSkills: [],
       preferredSkills: [],
       keyResponsibilities: [],
-      idealExperience: '',
+      idealExperience: "",
     };
   }
 
   return {
-    requiredSkills: normalizeArray(payload.requiredSkills || payload.required_skill || payload.required_skillset || payload.requiredSkills),
-    preferredSkills: normalizeArray(payload.preferredSkills || payload.preferred_skill || payload.preferred_skillset || payload.preferredSkills),
-    keyResponsibilities: normalizeArray(payload.keyResponsibilities || payload.key_responsibilities || payload.responsibilities || payload.keyResponsibilities),
-    idealExperience: normalizeText(payload.idealExperience || payload.ideal_experience || payload.idealCandidateExperience || payload.ideal_candidate_experience || payload.idealExperience),
+    requiredSkills: normalizeArray(
+      payload.requiredSkills ||
+        payload.required_skill ||
+        payload.required_skillset ||
+        payload.requiredSkills,
+    ),
+    preferredSkills: normalizeArray(
+      payload.preferredSkills ||
+        payload.preferred_skill ||
+        payload.preferred_skillset ||
+        payload.preferredSkills,
+    ),
+    keyResponsibilities: normalizeArray(
+      payload.keyResponsibilities ||
+        payload.key_responsibilities ||
+        payload.responsibilities ||
+        payload.keyResponsibilities,
+    ),
+    idealExperience: normalizeText(
+      payload.idealExperience ||
+        payload.ideal_experience ||
+        payload.idealCandidateExperience ||
+        payload.ideal_candidate_experience ||
+        payload.idealExperience,
+    ),
   };
 }
 
@@ -67,7 +113,10 @@ function extractSectionLines(text, headings) {
 function parseListFromSection(lines) {
   const values = [];
   for (const line of lines) {
-    const candidates = line.split(/[•\-–,;]+/).map((part) => part.trim()).filter(Boolean);
+    const candidates = line
+      .split(/[•\-–,;]+/)
+      .map((part) => part.trim())
+      .filter(Boolean);
     for (const candidate of candidates) {
       if (!values.includes(candidate)) {
         values.push(candidate);
@@ -78,11 +127,20 @@ function parseListFromSection(lines) {
 }
 
 function extractHeuristics(text) {
-  const requiredSkills = parseListFromSection(extractSectionLines(text, REQUIRED_HEADINGS));
-  const preferredSkills = parseListFromSection(extractSectionLines(text, PREFERRED_HEADINGS));
-  const keyResponsibilities = parseListFromSection(extractSectionLines(text, RESPONSIBILITIES_HEADINGS));
-  const idealExperienceLines = extractSectionLines(text, IDEAL_EXPERIENCE_HEADINGS);
-  const idealExperience = idealExperienceLines.join(' ').trim();
+  const requiredSkills = parseListFromSection(
+    extractSectionLines(text, REQUIRED_HEADINGS),
+  );
+  const preferredSkills = parseListFromSection(
+    extractSectionLines(text, PREFERRED_HEADINGS),
+  );
+  const keyResponsibilities = parseListFromSection(
+    extractSectionLines(text, RESPONSIBILITIES_HEADINGS),
+  );
+  const idealExperienceLines = extractSectionLines(
+    text,
+    IDEAL_EXPERIENCE_HEADINGS,
+  );
+  const idealExperience = idealExperienceLines.join(" ").trim();
 
   return {
     requiredSkills,
@@ -94,7 +152,7 @@ function extractHeuristics(text) {
 
 export async function fetchJdBuffer(jd) {
   if (!jd || !jd.secureUrl) {
-    throw new Error('JD secure URL missing');
+    throw new Error("JD secure URL missing");
   }
 
   const response = await fetch(jd.secureUrl);
@@ -108,26 +166,26 @@ export async function fetchJdBuffer(jd) {
 
 export async function extractTextFromJdBuffer(buffer, mimeType) {
   if (!buffer || !Buffer.isBuffer(buffer)) {
-    throw new Error('Invalid JD buffer');
+    throw new Error("Invalid JD buffer");
   }
 
-  if (String(mimeType).toLowerCase() === 'text/plain') {
-    return buffer.toString('utf8').trim();
+  if (String(mimeType).toLowerCase() === "text/plain") {
+    return buffer.toString("utf8").trim();
   }
 
   const data = await pdfParse(buffer);
-  return data?.text?.trim() || '';
+  return data?.text?.trim() || "";
 }
 
 async function doExtractJD(jd) {
   const text = normalizeText(jd.parsedText);
   if (!text) {
-    throw new Error('No JD text available for extraction');
+    throw new Error("No JD text available for extraction");
   }
 
   const prompt = promptService.renderPrompt({
-    key: 'jobDescription.analysis',
-    version: 'v1',
+    key: "jobDescription.analysis",
+    version: "v1",
     values: { jobDescriptionText: text },
   });
 
@@ -136,21 +194,21 @@ async function doExtractJD(jd) {
     model: process.env.AI_JD_ANALYSIS_MODEL || undefined,
     temperature: 0.25,
     maxTokens: 600,
-    metadata: { route: 'jobDescription.analysis', jdId: jd._id?.toString() },
+    metadata: { route: "jobDescription.analysis", jdId: jd._id?.toString() },
   });
 
   const formatted = formatAIResponse(aiResult);
   let extracted = null;
   let extractionError = formatted.jsonParseError;
-  let status = 'failed';
+  let status = "failed";
 
-  if (formatted.parsedJson && typeof formatted.parsedJson === 'object') {
+  if (formatted.parsedJson && typeof formatted.parsedJson === "object") {
     extracted = normalizeExtractionPayload(formatted.parsedJson);
-    status = 'completed';
+    status = "completed";
   } else {
     extracted = extractHeuristics(text);
     extractionError = `AI JSON parse failed: ${formatted.jsonParseError}. Fallback heuristics applied.`;
-    status = 'completed';
+    status = "completed";
   }
 
   jd.extractedRequiredSkills = extracted.requiredSkills;
@@ -165,19 +223,22 @@ async function doExtractJD(jd) {
 }
 
 async function doParseJD(jd) {
-  if (!jd) throw new Error('JobDescription is required');
+  if (!jd) throw new Error("JobDescription is required");
 
-  let parsedText = '';
+  let parsedText = "";
   let parseError = null;
-  let status = 'failed';
+  let status = "failed";
 
   try {
     const buffer = await fetchJdBuffer(jd);
     parsedText = await extractTextFromJdBuffer(buffer, jd.mimeType);
-    status = 'completed';
+    status = "completed";
   } catch (err) {
-    parseError = String(err.message || 'JD parse failed');
-    console.warn('JD parse error', { jdId: jd._id?.toString(), error: parseError });
+    parseError = String(err.message || "JD parse failed");
+    console.warn("JD parse error", {
+      jdId: jd._id?.toString(),
+      error: parseError,
+    });
   }
 
   jd.parsedText = parsedText || null;
@@ -186,13 +247,13 @@ async function doParseJD(jd) {
   jd.parsedAt = new Date();
   await jd.save();
 
-  if (status === 'completed' && parsedText) {
+  if (status === "completed" && parsedText) {
     try {
       await doExtractJD(jd);
     } catch (err) {
-      console.error('JD extraction failed', err);
-      jd.extractionStatus = 'failed';
-      jd.extractionError = String(err.message || 'JD extraction failed');
+      console.error("JD extraction failed", err);
+      jd.extractionStatus = "failed";
+      jd.extractionError = String(err.message || "JD extraction failed");
       jd.extractedAt = new Date();
       await jd.save();
     }
@@ -205,23 +266,23 @@ export async function scheduleJDParseById(userId, jdId) {
   const jd = await JobDescription.findOne({ _id: jdId, userId }).exec();
   if (!jd) return null;
 
-  const mimeType = String(jd.mimeType || '').toLowerCase();
-  if (!['application/pdf', 'text/plain'].includes(mimeType)) {
-    jd.parseStatus = 'failed';
-    jd.parseError = 'Unsupported JD mime type for parsing';
+  const mimeType = String(jd.mimeType || "").toLowerCase();
+  if (!["application/pdf", "text/plain"].includes(mimeType)) {
+    jd.parseStatus = "failed";
+    jd.parseError = "Unsupported JD mime type for parsing";
     jd.parsedAt = new Date();
     await jd.save();
     return jd.toObject();
   }
 
-  jd.parseStatus = 'pending';
+  jd.parseStatus = "pending";
   jd.parseError = null;
-  jd.extractionStatus = 'pending';
+  jd.extractionStatus = "pending";
   jd.extractionError = null;
   await jd.save();
 
   void doParseJD(jd).catch((err) => {
-    console.error('Background JD parse failed', err);
+    console.error("Background JD parse failed", err);
   });
 
   return jd.toObject();
