@@ -4,6 +4,7 @@ import { promptService } from '../services/prompt.service.js';
 import { evaluateInterviewAnswer } from '../services/interview/answerEvaluation.service.js';
 import { generateFollowUpQuestion } from '../services/interview/followUpEngine.service.js';
 import { generateInterviewQuestions } from '../services/interview/questionGenerator.service.js';
+import { generateCodingQuestions } from '../services/coding/questionGenerator.service.js';
 
 function success(res, data = {}, message = 'Success') {
   return res.json({ success: true, message, data });
@@ -141,6 +142,44 @@ export async function evaluateAnswer(req, res) {
   } catch (err) {
     console.error('Evaluate interview answer error', err);
     return res.status(500).json({ success: false, message: err.message || 'Failed to evaluate interview answer' });
+  }
+}
+
+export async function generateCodingQuestionsHandler(req, res) {
+  try {
+    const userId = req.user?._id ? String(req.user._id) : null;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Unauthenticated' });
+    }
+
+    const {
+      role,
+      difficulty,
+      companyMode,
+      topic,
+      resumeSummary,
+      jobDescriptionSummary,
+      count,
+      useAi,
+      persist,
+    } = req.body;
+
+    const questions = await generateCodingQuestions({
+      role,
+      difficulty,
+      companyMode,
+      topic,
+      resumeSummary,
+      jobDescriptionSummary,
+      count,
+      useAi,
+      persist,
+    });
+
+    return success(res, { questions }, 'Coding questions generated');
+  } catch (err) {
+    console.error('Generate coding questions error', err);
+    return res.status(500).json({ success: false, message: err.message || 'Failed to generate coding questions' });
   }
 }
 

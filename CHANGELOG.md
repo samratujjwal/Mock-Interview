@@ -73,6 +73,11 @@ In Progress
 - Added a protected multi-step interview setup wizard UI with role/experience/company/type/difficulty/resume/JD screening and summary review on `/interview` (T-046).
 - Implemented `POST /api/v1/interviews` session bootstrap with request validation, role/company/difficulty persistence, first-question handle, and interview request rate limiting (T-047).
 - Added answer submission support for interview sessions with timing metrics, response payload storage, and hidden answer-evaluation generation via `POST /api/v1/ai/evaluate` plus a new `POST /api/v1/interviews/:id/answer` alias for the interview flow (T-049).
+- Added Judge0 integration service: `backend/src/services/coding/judge0.service.js` implementing language mapping, base64 payload handling, polling, result normalization and an in-memory per-instance rate limiter (T-060).
+- Added coding Run & Submit endpoints: `POST /api/v1/coding/run`, `POST /api/v1/coding/submit` with controllers at `backend/src/controllers/coding.controller.js` and routes at `backend/src/routes/coding.routes.js` (T-061).
+- Added a coding question generator endpoint `POST /api/v1/ai/questions/coding` with AI-assisted and curated-library fallback generation, plus prompt/template support and `CodingQuestion` persistence (T-062).
+- Added a Monaco-powered coding interview workspace at `frontend/src/pages/CodingInterview.jsx` with autosave, full-screen mode, language switching, run/submit actions, and console-style execution feedback, wired to the new coding backend endpoints (T-063).
+- Added authenticated coding review and optimization endpoints at `POST /api/v1/coding/review` and `POST /api/v1/coding/optimize`, plus a review/optimization experience in the coding studio UI that surfaces feedback and estimated complexity without revealing a full solution (T-064).
 
 #### Repository & Workspace Setup (Task T-001)
 

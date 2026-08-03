@@ -12,7 +12,7 @@ import {
 export const NAV_ITEMS = [
   { label: "Dashboard", to: "/dashboard", icon: LayoutDashboard },
   { label: "Interviews", to: "/interview", icon: MessageSquareText },
-  { label: "Coding", to: "/coding", icon: Code2, comingSoon: true },
+  { label: "Coding", to: "/coding", icon: Code2 },
   { label: "Reports", to: "/reports", icon: FileText, comingSoon: true },
   { label: "History", to: "/history", icon: History, comingSoon: true },
   { label: "Learning", to: "/learning", icon: GraduationCap, comingSoon: true },

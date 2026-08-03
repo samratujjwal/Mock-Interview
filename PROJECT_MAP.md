@@ -107,8 +107,8 @@ This file checks TASKS.md tasks against real files on disk. "Done" means the exp
 | T-060 | Judge0 integration service | ❌ Stub (README only / missing) | `backend/src/services/coding` |
 | T-061 | Run & Submit endpoints | ❌ Not started | `✗ backend/src/routes/coding.routes.js` |
 | T-062 | Coding question generator | ❌ Not started | `✗ backend/src/services/coding/questionGenerator.service.js` |
-| T-063 | Monaco editor integration & coding screen | ❌ Stub (README only / missing) | `frontend/src/features/coding` |
-| T-064 | AI code review, complexity & optimization | ❌ Not started | `✗ backend/src/services/coding/review.service.js` |
+| T-063 | Monaco editor integration & coding screen | ✅ Implemented | `frontend/src/pages/CodingInterview.jsx` |
+| T-064 | AI code review, complexity & optimization | ✅ Implemented | `backend/src/services/coding/review.service.js` |
 
 ## M6 — Voice Interview
 

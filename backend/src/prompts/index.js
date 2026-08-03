@@ -7,6 +7,9 @@ import interviewQuestionsV1 from "./templates/interview.questions.v1.js";
 import interviewAnswerEvaluationV1 from "./templates/interview.answer.evaluation.v1.js";
 import interviewFollowupV1 from "./templates/interview.followup.v1.js";
 import interviewHintV1 from "./templates/interview.hint.v1.js";
+import codingQuestionsV1 from "./templates/coding.questions.v1.js";
+import codingReviewV1 from "./templates/coding.review.v1.js";
+import codingOptimizeV1 from "./templates/coding.optimize.v1.js";
 
 const promptTemplates = [
   aiCompletionV1,
@@ -18,6 +21,9 @@ const promptTemplates = [
   interviewAnswerEvaluationV1,
   interviewFollowupV1,
   interviewHintV1,
+  codingQuestionsV1,
+  codingReviewV1,
+  codingOptimizeV1,
 ];
 
 const registry = promptTemplates.reduce((map, template) => {

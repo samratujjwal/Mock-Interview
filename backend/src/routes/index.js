@@ -10,6 +10,7 @@ import resumeRoutes from './resume.routes.js';
 import jobDescriptionRoutes from './jobDescription.routes.js';
 import interviewRoutes from './interview.routes.js';
 import companyRoutes from './company.routes.js';
+import codingRoutes from './coding.routes.js';
 
 const apiRouter = Router();
 
@@ -42,6 +43,9 @@ apiRouter.use('/companies', companyRoutes);
 
 // AI provider endpoints
 apiRouter.use('/ai', aiRoutes);
+
+// Coding endpoints (runs & submits)
+apiRouter.use('/coding', codingRoutes);
 
 // Dashboard aggregation endpoints
 apiRouter.use('/dashboard', dashboardRoutes);

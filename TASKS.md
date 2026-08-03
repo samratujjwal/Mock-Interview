@@ -622,6 +622,8 @@ Goal: A sandboxed coding round with Monaco, Judge0 execution, visible/hidden tes
   - Run against sample tests; submit against hidden tests.
   - Handles compile errors, runtime errors, TLE, MLE, wrong answer distinctly.
   - No user code executes locally.
+- **Status:** Completed
+- **Implementation notes:** Implemented backend integration at `backend/src/services/coding/judge0.service.js` — includes language mapping, base64 payload encoding/decoding, polling (`/submissions/{token}`), result normalization, and an in-memory per-instance rate limiter. Use `JUDGE0_API_KEY` (RapidAPI) / `JUDGE0_URL` to configure endpoint. Replace in-memory rate limiter with Redis for multi-instance deployments.
 
 ### T-061 · Run & Submit endpoints
 - **Scope:** MVP · **Priority:** P0 · **Complexity:** M · **Depends on:** T-060
@@ -630,6 +632,9 @@ Goal: A sandboxed coding round with Monaco, Judge0 execution, visible/hidden tes
   - Run returns per-sample output; submit returns pass/fail counts + metrics.
   - Filtering by difficulty/topic/company on list.
   - Ownership + rate limits enforced.
+  - **Status:** Completed
+  - **Implementation notes:** Implemented `POST /api/v1/coding/run` and `POST /api/v1/coding/submit` controllers in `backend/src/controllers/coding.controller.js` and routes in `backend/src/routes/coding.routes.js`. Routes mounted at `backend/src/routes/index.js` (`apiRouter.use('/coding', codingRoutes)`). The endpoints use `backend/src/services/coding/judge0.service.js` (Judge0 integration, T-060) to execute submissions. `submit` iterates hidden test cases from `backend/src/models/CodingQuestion.js` and persists results in `backend/src/models/CodingSubmission.js`.
+
 
 ### T-062 · Coding question generator
 - **Scope:** MVP · **Priority:** P0 · **Complexity:** M · **Depends on:** T-048, T-059
@@ -638,6 +643,8 @@ Goal: A sandboxed coding round with Monaco, Judge0 execution, visible/hidden tes
   - Generated problems include description, constraints, examples, starter code, tests.
   - Difficulty selectable (Easy/Medium/Hard/company/topic).
   - Falls back to curated library on AI failure.
+- **Status:** Completed
+- **Implementation notes:** Added a dedicated generator at `backend/src/services/coding/questionGenerator.service.js` that returns `CodingQuestion`-shaped payloads, persists them to `CodingQuestion` when enabled, and uses the new prompt template `backend/src/prompts/templates/coding.questions.v1.js`. The endpoint is exposed via `POST /api/v1/ai/questions/coding` and can use AI generation with a curated-library fallback when AI is unavailable.
 
 ## Epic M5.E2 — Coding UI & AI Review
 
@@ -648,7 +655,9 @@ Goal: A sandboxed coding round with Monaco, Judge0 execution, visible/hidden tes
   - Language switch updates starter code + highlighting.
   - Autosave prevents loss on refresh; syncs during active interview.
   - Console shows sample/hidden (masked) results, errors, timers, progress.
-
+- **Status:** Completed
+- **Implementation notes:** Added a Monaco-based coding studio at `frontend/src/pages/CodingInterview.jsx` with a question pane, language switcher, local autosave, full-screen mode, run/submit actions, and console-style result feedback. The page calls the new backend `/api/v1/ai/questions/coding`, `/api/v1/coding/run`, and `/api/v1/coding/submit` endpoints through `frontend/src/services/codingService.js`, and the sidebar navigation now exposes the route at `/coding`.
+  
 ### T-064 · AI code review, complexity & optimization
 - **Scope:** MVP · **Priority:** P1 · **Complexity:** M · **Depends on:** T-061, T-036
 - `POST /coding/review`, `/coding/optimize` for readability/naming/logic/edge cases, estimated time/space complexity, and optimization + debugging hints (FEATURES 14.14–14.17).
@@ -656,6 +665,8 @@ Goal: A sandboxed coding round with Monaco, Judge0 execution, visible/hidden tes
   - Review suggests improvements without rewriting the whole solution.
   - Complexity clearly labeled as an estimate.
   - Debugging hints never reveal the full solution.
+  - **Status:** Completed
+  - **Implementation notes:** Added authenticated backend endpoints `POST /api/v1/coding/review` and `POST /api/v1/coding/optimize` backed by a dedicated review service that uses the AI provider layer with structured fallback behavior. The coding studio UI now exposes Review and Optimize actions so candidates can inspect suggestions and estimated complexity without receiving the full solution.
 
 ---
 

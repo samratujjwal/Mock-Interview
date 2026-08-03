@@ -1,4 +1,4 @@
-import { setTimeout as delay } from "node:timers/promises";
+﻿import { setTimeout as delay } from "node:timers/promises";
 
 const DEFAULT_BASE_URL = process.env.JUDGE0_URL || "https://judge0-ce.p.rapidapi.com";
 const DEFAULT_TIMEOUT_MS = Number.parseInt(process.env.JUDGE0_TIMEOUT_MS || "", 10) || 120000;
@@ -76,13 +76,20 @@ export class Judge0Service {
     return LANGUAGE_IDS[normalized] ?? null;
   }
 
-  buildHeaders() {
-    const headers = {
-      "Content-Type": "application/json",
-    };
+    buildHeaders() {
+    const headers = { "Content-Type": "application/json" };
 
     if (this.apiKey) {
-      headers.Authorization = `Bearer ${this.apiKey}`;
+      // Support both RapidAPI-hosted Judge0 proxies and self-hosted/cloud Judge0 instances.
+      // If the baseUrl mentions rapidapi, prefer X-RapidAPI-Key; otherwise send an Authorization bearer token.
+      if (this.baseUrl.includes("rapidapi.com") || process.env.JUDGE0_USE_RAPIDAPI === "true") {
+        headers["X-RapidAPI-Key"] = String(this.apiKey);
+        if (process.env.JUDGE0_RAPIDAPI_HOST) {
+          headers["X-RapidAPI-Host"] = String(process.env.JUDGE0_RAPIDAPI_HOST);
+        }
+      } else {
+        headers['Authorization'] = 'Bearer ' + String(this.apiKey);
+      }
     }
 
     return headers;
@@ -223,3 +230,5 @@ export class Judge0Service {
 }
 
 export const judge0Service = new Judge0Service();
+
+

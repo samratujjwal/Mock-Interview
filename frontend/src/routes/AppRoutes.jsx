@@ -17,6 +17,7 @@ const InterviewSetupWizard = lazy(
   () => import("../features/interview/InterviewSetupWizard"),
 );
 const LiveInterview = lazy(() => import("../pages/LiveInterview"));
+const CodingInterview = lazy(() => import("../pages/CodingInterview"));
 
 function HomePage() {
   return (
@@ -67,6 +68,7 @@ export default function AppRoutes() {
         >
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/interview" element={<InterviewSetupWizard />} />
+          <Route path="/coding" element={<CodingInterview />} />
           <Route
             path="/interview/session/:sessionId"
             element={<LiveInterview />}
