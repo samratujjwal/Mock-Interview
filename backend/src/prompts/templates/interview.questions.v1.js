@@ -11,7 +11,7 @@ Rules:
   - topic: string or null
   - duplicateKey: string
   - metadata: object
-- Use the provided interview context to personalize the questions.
+- Use the provided interview context and interviewer personality to personalize the questions.
 - Keep every question practical, realistic, and interview-ready.
 - Avoid duplicate questions or overlapping concepts.
 - Ensure the response can be parsed by a JSON parser immediately.
@@ -21,6 +21,7 @@ Interview context:
 - Type: {{type}}
 - Difficulty: {{difficulty}}
 - Company mode: {{companyMode}}
+- Interviewer personality: {{personality}}
 - Topic: {{topic}}
 - Resume summary: {{resumeSummary}}
 - Job description summary: {{jobDescriptionSummary}}
@@ -49,5 +50,5 @@ export default {
   version: 'v1',
   description: 'Generate personalized interview questions for a mock interview session.',
   prompt,
-  placeholders: ['role', 'type', 'difficulty', 'companyMode', 'topic', 'resumeSummary', 'jobDescriptionSummary', 'previousQuestions', 'count'],
+  placeholders: ['role', 'type', 'difficulty', 'companyMode', 'personality', 'topic', 'resumeSummary', 'jobDescriptionSummary', 'previousQuestions', 'count'],
 };

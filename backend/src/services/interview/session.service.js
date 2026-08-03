@@ -7,6 +7,7 @@ import {
   buildInitialSessionMemory,
 } from "./contextMemory.service.js";
 import { findFallbackInterviewTemplate } from "./template.service.js";
+import { generateSessionReport } from "./report.service.js";
 
 function isValidObjectId(id) {
   return mongoose.Types.ObjectId.isValid(String(id));
@@ -79,6 +80,7 @@ export async function createInterviewSession(userId, data = {}) {
     companyMode: normalizeEnumValue(data.companyMode, "product"),
     personality: normalizeEnumValue(data.personality, "professional"),
     practiceMode: Boolean(data.practiceMode),
+    hintUsageCount: 0,
     status: initialStatus,
     startedAt: initialStatus === "Active" ? new Date() : null,
     memory: hydratedMemory,
@@ -132,6 +134,7 @@ export async function updateInterviewSession(userId, sessionId, updates = {}) {
     "type",
     "difficulty",
     "companyMode",
+    "personality",
     "status",
     "memory",
     "currentQuestionIndex",
@@ -286,6 +289,7 @@ export async function recordHintUsage(userId, sessionId, questionId, hint) {
           requestedAt: new Date(),
         },
       },
+      $inc: { hintUsageCount: 1 },
     },
     { new: true },
   )
@@ -384,10 +388,26 @@ export async function finishInterviewSession(userId, sessionId) {
         )
       : null;
 
-  return transitionSessionStatus(userId, sessionId, "Completed", {
+  const completedSession = await transitionSessionStatus(userId, sessionId, "Completed", {
     completedAt: new Date(),
     totalScore,
   });
+
+  if (completedSession) {
+    const report = generateSessionReport({
+      ...completedSession,
+      questions: currentSession.questions || [],
+      status: "Completed",
+    });
+
+    await InterviewSession.findOneAndUpdate(
+      { _id: sessionId, userId },
+      { $set: { report } },
+      { new: true },
+    ).exec();
+  }
+
+  return completedSession;
 }
 
 // A session can only receive new answers while it is Active.

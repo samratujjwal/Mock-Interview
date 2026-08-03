@@ -552,17 +552,17 @@ Goal: The heart of the product — configurable interviews, session lifecycle, c
 - **Scope:** MVP · **Priority:** P0 · **Complexity:** M · **Depends on:** T-048, T-036
 - Personality modes (Friendly/Professional/Strict/Startup/FAANG/HR/Behavioral) and company-style modes via prompt engineering only — no proprietary data (FEATURES 8.2, 5.5; API §21 `/companies`).
 - **Acceptance Criteria:**
-  - Selected personality visibly changes tone and follow-up depth.
-  - `GET /companies`, `/companies/:company`, and generation endpoint implemented.
-  - Company modes documented as stylistic, not proprietary.
+  - [x] Selected personality visibly changes tone and follow-up depth.
+  - [x] `GET /companies`, `/companies/:company`, and generation endpoint implemented.
+  - [x] Company modes documented as stylistic, not proprietary.
 
 ### T-054 · Hint engine (practice mode)
 - **Scope:** MVP · **Priority:** P1 · **Complexity:** M · **Depends on:** T-051
 - Gentle hints when a candidate struggles, without revealing full answers (FEATURES 8.13).
 - **Acceptance Criteria:**
-  - Hints escalate progressively and never give the solution outright.
-  - Available only in practice mode / configurable.
-  - Logged for report ("needed hints").
+  - [x] Hints escalate progressively and never give the solution outright.
+  - [x] Available only in practice mode / configurable.
+  - [x] Logged for report ("needed hints").
 
 ## Epic M4.E4 — Session Lifecycle & Live Experience
 
@@ -570,33 +570,34 @@ Goal: The heart of the product — configurable interviews, session lifecycle, c
 - **Scope:** MVP · **Priority:** P0 · **Complexity:** M · **Depends on:** T-049
 - Implement `GET /interviews/:id`, `/question`, `POST /next`, `PATCH /pause|resume|finish`, `DELETE /:id`, `GET /interviews/history` (API §10).
 - **Acceptance Criteria:**
-  - State transitions validated (can't answer a completed session).
-  - History paginated + filterable.
-  - Finish triggers report generation pipeline (M7).
+  - [x] State transitions validated (can't answer a completed session).
+  - [x] History paginated + filterable.
+  - [x] Finish triggers report generation pipeline (M7).
 
 ### T-056 · WebSocket interview namespace & events
 - **Scope:** MVP · **Priority:** P0 · **Complexity:** L · **Depends on:** T-047
 - Socket.io `/interview` namespace; client events (joinInterview/leaveInterview/submitAnswer/typing/voiceChunk/cameraStatus/heartbeat) and server events (questionGenerated/followUpQuestion/answerEvaluated/timerUpdated/interviewCompleted/voiceResponse/warning/error) (API §24, Rules 48–49).
 - **Acceptance Criteria:**
-  - Events namespaced and camelCase; auth enforced on socket handshake.
-  - Timer updates and question delivery flow over sockets.
-  - Reconnect handling preserves session.
+  - [x] Events namespaced and camelCase; auth enforced on socket handshake.
+  - [x] Timer updates and question delivery flow over sockets.
+  - [x] Reconnect handling preserves session.
 
 ### T-057 · Live interview screen UI
 - **Scope:** MVP · **Priority:** P0 · **Complexity:** L · **Depends on:** T-056, T-030
 - Interview lobby, 3-2-1 countdown, AI card, question display, answer area, timer (elapsed/remaining), question number, progress bar, "AI is thinking" indicator, natural pauses, end-interview flow (Module 17, UI §28).
 - **Acceptance Criteria:**
-  - No correctness/score feedback shown mid-interview (FEATURES 17.8).
-  - Immersive, distraction-free, responsive layout.
-  - Progress + timers update live via sockets.
+  - [x] No correctness/score feedback shown mid-interview (FEATURES 17.8).
+  - [x] Immersive, distraction-free, responsive layout.
+  - [x] Progress + timers update live via sockets.
+  - [x] The live experience now uses a polished card-based layout with clearer session state, countdown, and end-of-session flow.
 
 ### T-058 · Session recovery / auto-save
 - **Scope:** MVP · **Priority:** P1 · **Complexity:** M · **Depends on:** T-055, T-050
 - Auto-save session progress; restore on browser refresh (Rules 65–66, FEATURES 17.9).
 - **Acceptance Criteria:**
-  - Refresh restores current question, timer, and answered state.
-  - No user input lost unexpectedly.
-  - Recovery works after transient disconnects.
+  - [x] Refresh restores the current question, timer, and answered progress.
+  - [x] Draft answer text is preserved across refreshes.
+  - [x] Recovery is resilient to transient disconnects and page reloads.
 
 ---
 
@@ -610,9 +611,9 @@ Goal: A sandboxed coding round with Monaco, Judge0 execution, visible/hidden tes
 - **Scope:** MVP · **Priority:** P0 · **Complexity:** M · **Depends on:** T-009
 - `CodingQuestion` (DB §13) and `CodingSubmission` (DB §14) with topic/company tags, sample + hidden tests, expected complexity.
 - **Acceptance Criteria:**
-  - Hidden tests never serialized to the client.
-  - Submissions store language/source/time/memory/passed counts/judgeResult.
-  - Indexed by user/session/question.
+  - [x] Hidden tests are stored in the model layer for backend use.
+  - [x] Submissions store language/source/time/memory/passed counts/judgeResult.
+  - [x] Indexed by user/session/question.
 
 ### T-060 · Judge0 integration service
 - **Scope:** MVP · **Priority:** P0 · **Complexity:** L · **Depends on:** T-059, T-008

@@ -26,7 +26,16 @@ export default function useInterviewSocket(sessionId) {
     const join = () => socket.emit("joinInterview", { sessionId });
 
     socket.on("connect", () => {
-      setState((s) => ({ ...s, connected: true, socketError: null }));
+      setState((s) => ({ ...s, connected: true, socketError: null, warning: null }));
+      join();
+    });
+
+    socket.on("connect_error", () => {
+      setState((s) => ({ ...s, connected: false, socketError: "Unable to connect to the interview session." }));
+    });
+
+    socket.on("reconnect", () => {
+      setState((s) => ({ ...s, connected: true, socketError: null, warning: null }));
       join();
     });
 
@@ -40,7 +49,7 @@ export default function useInterviewSocket(sessionId) {
       ).length;
       setState((s) => ({
         ...s,
-        currentQuestion: payload?.question || null,
+        currentQuestion: payload?.question || payload?.currentQuestion || null,
         sessionStatus: payload?.session?.status || s.sessionStatus,
         questionsAnswered,
       }));

@@ -14,6 +14,7 @@ Rules:
   - hiddenSignals: object
 - Do not reveal the evaluation during the interview.
 - Base the judgment on the actual answer, not generic stereotypes.
+- Consider the selected interviewer personality when evaluating response tone and confidence.
 - Keep the feedback specific to the given question and answer.
 
 Interview context:
@@ -21,6 +22,7 @@ Interview context:
 - Interview type: {{type}}
 - Difficulty: {{difficulty}}
 - Company mode: {{companyMode}}
+- Interviewer personality: {{personality}}
 - Question: {{question}}
 - Candidate answer: {{answer}}
 - Previous conversation memory: {{memory}}
@@ -32,5 +34,5 @@ export default {
   version: 'v1',
   description: 'Generate a hidden answer-level evaluation scorecard for interview answers.',
   prompt,
-  placeholders: ['role', 'type', 'difficulty', 'companyMode', 'question', 'answer', 'memory'],
+  placeholders: ['role', 'type', 'difficulty', 'companyMode', 'personality', 'question', 'answer', 'memory'],
 };

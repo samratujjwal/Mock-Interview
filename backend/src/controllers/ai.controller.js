@@ -76,6 +76,7 @@ export async function generateQuestions(req, res) {
       type,
       difficulty,
       companyMode,
+      personality,
       topic,
       role,
       resumeSummary,
@@ -91,6 +92,7 @@ export async function generateQuestions(req, res) {
       type: questionType,
       difficulty,
       companyMode,
+      personality,
       topic,
       role,
       resumeSummary,
@@ -116,7 +118,7 @@ export async function evaluateAnswer(req, res) {
       return res.status(401).json({ success: false, message: 'Unauthenticated' });
     }
 
-    const { role, type, difficulty, companyMode, question, answer, memory } = req.body;
+    const { role, type, difficulty, companyMode, personality, question, answer, memory } = req.body;
     if (!question || !String(question).trim()) {
       return res.status(422).json({ success: false, message: 'Question is required' });
     }
@@ -129,6 +131,7 @@ export async function evaluateAnswer(req, res) {
       type,
       difficulty,
       companyMode,
+      personality,
       question,
       answer,
       memory,
@@ -148,7 +151,7 @@ export async function generateFollowUp(req, res) {
       return res.status(401).json({ success: false, message: 'Unauthenticated' });
     }
 
-    const { role, type, difficulty, companyMode, currentQuestion, answer, memory } = req.body;
+    const { role, type, difficulty, companyMode, personality, currentQuestion, answer, memory } = req.body;
     if (!currentQuestion || !String(currentQuestion).trim()) {
       return res.status(422).json({ success: false, message: 'Current question is required' });
     }
@@ -161,6 +164,7 @@ export async function generateFollowUp(req, res) {
       type,
       difficulty,
       companyMode,
+      personality,
       currentQuestion,
       answer,
       memory,

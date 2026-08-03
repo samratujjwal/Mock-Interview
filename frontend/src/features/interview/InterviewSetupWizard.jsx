@@ -18,6 +18,16 @@ const COMPANY_MODE_MAP = {
   "Scale-up": "scale-up",
 };
 
+const PERSONALITY_MAP = {
+  Friendly: "friendly",
+  Professional: "professional",
+  Strict: "strict",
+  Startup: "startup",
+  FAANG: "faang",
+  HR: "hr",
+  Behavioral: "behavioral",
+};
+
 const STEPS = [
   {
     key: "role",
@@ -33,6 +43,11 @@ const STEPS = [
     key: "companyMode",
     title: "Company Mode",
     subtitle: "Select the interview style you want to simulate.",
+  },
+  {
+    key: "personality",
+    title: "Interviewer Personality",
+    subtitle: "Choose the tone and follow-up style for the AI interviewer.",
   },
   {
     key: "type",
@@ -77,6 +92,15 @@ const EXPERIENCE_OPTIONS = [
   "8+ years",
 ];
 const COMPANY_OPTIONS = ["Product", "Startup", "FAANG", "Scale-up"];
+const PERSONALITY_OPTIONS = [
+  "Friendly",
+  "Professional",
+  "Strict",
+  "Startup",
+  "FAANG",
+  "HR",
+  "Behavioral",
+];
 const TYPE_OPTIONS = ["Technical", "Behavioral", "System Design", "Mixed"];
 const DIFFICULTY_OPTIONS = ["Easy", "Medium", "Hard"];
 const RESUME_OPTIONS = ["Skip", "Upload now", "Use existing resume"];
@@ -137,6 +161,14 @@ const StepContent = ({ step, config, updateConfig, setStep, totalSteps }) => {
     );
   }
 
+  if (step.key === "personality") {
+    return renderOptionCards(
+      PERSONALITY_OPTIONS,
+      config.personality,
+      "personality",
+    );
+  }
+
   if (step.key === "type") {
     return renderOptionCards(TYPE_OPTIONS, config.type, "type");
   }
@@ -187,6 +219,14 @@ const StepContent = ({ step, config, updateConfig, setStep, totalSteps }) => {
         </div>
         <div className="rounded-2xl bg-white p-4">
           <p className="text-xs uppercase tracking-[0.24em] text-slate-500">
+            Interviewer personality
+          </p>
+          <p className="mt-2 text-base font-semibold text-slate-900">
+            {config.personality || "Not set"}
+          </p>
+        </div>
+        <div className="rounded-2xl bg-white p-4">
+          <p className="text-xs uppercase tracking-[0.24em] text-slate-500">
             Interview type
           </p>
           <p className="mt-2 text-base font-semibold text-slate-900">
@@ -217,13 +257,39 @@ const StepContent = ({ step, config, updateConfig, setStep, totalSteps }) => {
             {config.jd || "Skipped"}
           </p>
         </div>
+        <div className="rounded-2xl border border-slate-200 bg-white p-4">
+         <div className="flex items-center justify-between gap-3">
+           <div>
+             <p className="text-xs uppercase tracking-[0.24em] text-slate-500">
+               Practice mode
+             </p>
+             <p className="mt-2 text-base font-semibold text-slate-900">
+               {config.practiceMode ? "Hints enabled" : "Hints disabled"}
+             </p>
+           </div>
+           <button
+             type="button"
+             onClick={() => updateConfig("practiceMode", !config.practiceMode)}
+             className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${
+               config.practiceMode
+                 ? "bg-emerald-500/10 text-emerald-600"
+                 : "bg-slate-100 text-slate-600"
+             }`}
+           >
+             {config.practiceMode ? "Enabled" : "Disabled"}
+           </button>
+         </div>
+         <p className="mt-2 text-sm text-slate-500">
+           Enable guided hints during practice. Leave this off for a stricter exam-like flow.
+         </p>
+        </div>
         <div className="rounded-2xl bg-white p-4">
-          <p className="text-xs uppercase tracking-[0.24em] text-slate-500">
-            Estimated session
-          </p>
-          <p className="mt-2 text-base font-semibold text-slate-900">
-            {summary.questionCount} questions · {summary.estimatedMinutes} mins
-          </p>
+         <p className="text-xs uppercase tracking-[0.24em] text-slate-500">
+           Estimated session
+         </p>
+         <p className="mt-2 text-base font-semibold text-slate-900">
+           {summary.questionCount} questions · {summary.estimatedMinutes} mins
+         </p>
         </div>
       </div>
     </div>
@@ -236,6 +302,8 @@ export default function InterviewSetupWizard() {
     role: "",
     experience: "",
     companyMode: "Product",
+    personality: "Professional",
+    practiceMode: false,
     type: "Technical",
     difficulty: "Medium",
     resume: "Skip",
@@ -269,11 +337,15 @@ export default function InterviewSetupWizard() {
       setError("Please choose a company mode before continuing.");
       return false;
     }
-    if (stepIndex === 3 && !config.type) {
+    if (stepIndex === 3 && !config.personality) {
+      setError("Please choose an interviewer personality before continuing.");
+      return false;
+    }
+    if (stepIndex === 4 && !config.type) {
       setError("Please choose an interview type before continuing.");
       return false;
     }
-    if (stepIndex === 4 && !config.difficulty) {
+    if (stepIndex === 5 && !config.difficulty) {
       setError("Please choose a difficulty before continuing.");
       return false;
     }
@@ -309,6 +381,8 @@ export default function InterviewSetupWizard() {
         type: TYPE_MAP[config.type] || "technical",
         difficulty: (config.difficulty || "medium").toLowerCase(),
         companyMode: COMPANY_MODE_MAP[config.companyMode] || "product",
+        personality: PERSONALITY_MAP[config.personality] || "professional",
+        practiceMode: Boolean(config.practiceMode),
       });
 
       const sessionId = res.data?.data?.sessionId;
@@ -322,7 +396,7 @@ export default function InterviewSetupWizard() {
           questionCount,
           resumeUsed: config.resume !== "Skip",
           jdUsed: config.jd !== "Skip",
-          practiceMode: false,
+          practiceMode: Boolean(config.practiceMode),
         },
       });
     } catch (err) {
@@ -455,11 +529,19 @@ export default function InterviewSetupWizard() {
                     {config.companyMode}
                   </p>
                   <p>
+                    <span className="text-slate-500">Personality:</span>{" "}
+                    {config.personality}
+                  </p>
+                  <p>
                     <span className="text-slate-500">Type:</span> {config.type}
                   </p>
                   <p>
                     <span className="text-slate-500">Difficulty:</span>{" "}
                     {config.difficulty}
+                  </p>
+                  <p>
+                    <span className="text-slate-500">Practice mode:</span>{" "}
+                    {config.practiceMode ? "Hints enabled" : "Hints disabled"}
                   </p>
                 </div>
               </div>

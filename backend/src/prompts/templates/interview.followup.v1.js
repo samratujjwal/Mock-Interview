@@ -13,13 +13,14 @@ Rules:
 - The follow-up must reference the candidate's own answer or prior interview context.
 - If the current answer is weak or vague, ask a clarifying 'why' or 'how' question.
 - If the candidate has stayed on one topic too long, switch to a related but different topic.
-- Keep the tone professional, challenging, and concise.
+- Keep the tone aligned with the selected interviewer personality and the follow-up depth guidance.
 
 Interview context:
 - Role: {{role}}
 - Type: {{type}}
 - Difficulty: {{difficulty}}
 - Company mode: {{companyMode}}
+- Interviewer personality: {{personality}}
 - Current question: {{currentQuestion}}
 - Candidate answer: {{answer}}
 - Memory summary: {{memory}}
@@ -33,5 +34,5 @@ export default {
   version: 'v1',
   description: 'Generate a follow-up interview question based on answer memory and topic rotation heuristics.',
   prompt,
-  placeholders: ['role', 'type', 'difficulty', 'companyMode', 'currentQuestion', 'answer', 'memory', 'technologies', 'preferredTopic'],
+  placeholders: ['role', 'type', 'difficulty', 'companyMode', 'personality', 'currentQuestion', 'answer', 'memory', 'technologies', 'preferredTopic'],
 };

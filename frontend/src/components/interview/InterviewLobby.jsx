@@ -54,6 +54,18 @@ export default function InterviewLobby({ config, onStart }) {
           value={config.companyMode}
           ok
         />
+        <StatusRow
+          icon={Sparkles}
+          label="Personality"
+          value={config.personality || 'Professional'}
+          ok
+        />
+        <StatusRow
+          icon={Sparkles}
+          label="Practice mode"
+          value={config.practiceMode ? "Hints enabled" : "Hints disabled"}
+          ok
+        />
         <StatusRow icon={Video} label="Devices" value="Text mode ready" ok />
         <StatusRow
           icon={FileText}

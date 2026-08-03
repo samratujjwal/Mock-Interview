@@ -58,6 +58,7 @@ const interviewSessionSchema = new mongoose.Schema(
       index: true,
     },
     practiceMode: { type: Boolean, default: false },
+    hintUsageCount: { type: Number, min: 0, default: 0, index: true },
     status: {
       type: String,
       trim: true,
@@ -70,6 +71,7 @@ const interviewSessionSchema = new mongoose.Schema(
     questions: { type: [interviewQuestionSchema], default: () => [] },
     totalScore: { type: Number, min: 0, max: 100, default: null },
     summary: { type: String, trim: true, default: null },
+    report: { type: mongoose.Schema.Types.Mixed, default: null },
     startedAt: { type: Date, default: null },
     completedAt: { type: Date, default: null },
   },

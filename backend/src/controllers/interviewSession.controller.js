@@ -31,6 +31,15 @@ const allowedInterviewTypes = [
 ];
 const allowedDifficultyLevels = ["easy", "medium", "hard"];
 const allowedCompanyModes = ["startup", "product", "faang", "scale-up"];
+const allowedPersonalities = [
+  "friendly",
+  "professional",
+  "strict",
+  "startup",
+  "faang",
+  "hr",
+  "behavioral",
+];
 
 function success(res, data = {}, message = "Success") {
   return res.json({ success: true, message, data });
@@ -63,6 +72,7 @@ export async function createInterview(req, res) {
       type,
       difficulty,
       companyMode,
+      personality,
       practiceMode,
       memory,
       questions,
@@ -76,6 +86,7 @@ export async function createInterview(req, res) {
     const normalizedType = normalizeForValidation(type);
     const normalizedDifficulty = normalizeForValidation(difficulty);
     const normalizedCompanyMode = normalizeForValidation(companyMode);
+    const normalizedPersonality = normalizeForValidation(personality || "professional");
 
     if (!allowedInterviewTypes.includes(normalizedType)) {
       errors.push({
@@ -96,7 +107,15 @@ export async function createInterview(req, res) {
       errors.push({
         field: "companyMode",
         message:
-          "Company mode must be one of startup, product, FAANG, or scale-up.",
+          "Company mode must be one of startup, product, faang, or scale-up.",
+      });
+    }
+
+    if (!allowedPersonalities.includes(normalizedPersonality)) {
+      errors.push({
+        field: "personality",
+        message:
+          "Personality must be one of friendly, professional, strict, startup, faang, hr, or behavioral.",
       });
     }
 
@@ -133,6 +152,7 @@ export async function createInterview(req, res) {
       type: normalizedType,
       difficulty: normalizedDifficulty,
       companyMode: normalizedCompanyMode,
+      personality: normalizedPersonality,
       practiceMode: Boolean(practiceMode),
       memory,
       questions,
@@ -308,6 +328,7 @@ export async function submitInterviewQuestionAnswer(req, res) {
       type: session.type,
       difficulty: session.difficulty,
       companyMode: session.companyMode,
+      personality: session.personality,
       currentQuestion: answeredQuestion?.prompt || response,
       answer: response,
       memory: session.memory,

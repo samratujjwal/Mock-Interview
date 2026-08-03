@@ -130,6 +130,7 @@ export function registerInterviewHandlers(namespace) {
             type: session.type,
             difficulty: session.difficulty,
             companyMode: session.companyMode,
+            personality: session.personality,
             currentQuestion: answeredQuestion?.prompt || response,
             answer: response,
             memory: session.memory,

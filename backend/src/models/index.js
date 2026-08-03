@@ -6,5 +6,7 @@ export { Resume } from './Resume.js';
 export { JobDescription } from './JobDescription.js';
 export { InterviewSession } from './InterviewSession.js';
 export { InterviewTemplate } from './InterviewTemplate.js';
+export { CodingQuestion } from './CodingQuestion.js';
+export { CodingSubmission } from './CodingSubmission.js';
 export { interviewQuestionSchema as InterviewQuestionSchema } from './InterviewQuestion.js';
 export { default as InterviewAnswerSchema } from './InterviewAnswer.js';

@@ -24,6 +24,21 @@ function normalizeTopic(value) {
   return value ? String(value).trim() : null;
 }
 
+function normalizePersonality(value) {
+  const normalized = String(value || 'professional').trim().toLowerCase();
+  const personalities = new Set([
+    'friendly',
+    'professional',
+    'strict',
+    'startup',
+    'faang',
+    'hr',
+    'behavioral',
+  ]);
+
+  return personalities.has(normalized) ? normalized : 'professional';
+}
+
 function normalizeQuestionPayload(question = {}, fallbackType = 'technical', fallbackDifficulty = 'medium') {
   const prompt = String(question.prompt || '').trim();
   if (!prompt) return null;
@@ -60,12 +75,13 @@ function dedupeQuestions(questions = []) {
   return result;
 }
 
-function buildPromptContext({ type, difficulty, companyMode, topic, role, resumeSummary, jobDescriptionSummary, previousQuestions, count }) {
+function buildPromptContext({ type, difficulty, companyMode, personality, topic, role, resumeSummary, jobDescriptionSummary, previousQuestions, count }) {
   return {
     role: role || 'General Candidate',
     type: normalizeQuestionType(type),
     difficulty: normalizeDifficulty(difficulty),
     companyMode: normalizeCompanyMode(companyMode),
+    personality: normalizePersonality(personality),
     topic: normalizeTopic(topic),
     resumeSummary: resumeSummary ? String(resumeSummary).trim() : 'No resume details provided.',
     jobDescriptionSummary: jobDescriptionSummary ? String(jobDescriptionSummary).trim() : 'No job description details provided.',
@@ -121,6 +137,7 @@ export async function generateInterviewQuestions(options = {}) {
     type = 'technical',
     difficulty = 'medium',
     companyMode = 'product',
+    personality = 'professional',
     topic = null,
     role = 'General Candidate',
     resumeSummary = '',
@@ -146,6 +163,7 @@ export async function generateInterviewQuestions(options = {}) {
     type: normalizedType,
     difficulty: resolvedDifficulty,
     companyMode: normalizedCompanyMode,
+    personality,
     topic: normalizeTopic(topic),
     role,
     resumeSummary,
