@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import api from "../services/api";
-import useAuthStore from "../store/useAuthStore";
-import { clearAuthHeader } from "../utils/authHeader";
+import api from "../services/api.js";
+import useAuthStore from "../store/useAuthStore.js";
+import { clearAuthHeader } from "../utils/authHeader.js";
 
 export default function useLogout() {
   const navigate = useNavigate();

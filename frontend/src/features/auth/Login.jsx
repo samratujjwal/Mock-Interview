@@ -2,9 +2,9 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import api from '../../services/api';
-import useAuthStore from '../../store/useAuthStore';
-import { setAuthHeader } from '../../utils/authHeader';
+import api from '../../services/api.js';
+import useAuthStore from '../../store/useAuthStore.js';
+import { setAuthHeader } from '../../utils/authHeader.js';
 import { Link } from 'react-router-dom';
 
 const schema = z.object({

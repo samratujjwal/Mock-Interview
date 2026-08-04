@@ -3,13 +3,13 @@ import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Clock3, Radio, CheckCircle2 } from "lucide-react";
-import api from "../services/api";
-import useInterviewSocket from "../hooks/useInterviewSocket";
-import InterviewLobby from "../components/interview/InterviewLobby";
-import AICard from "../components/interview/AICard";
-import AnswerPanel from "../components/interview/AnswerPanel";
-import InterviewHUD from "../components/interview/InterviewHUD";
-import EndInterviewDialog from "../components/interview/EndInterviewDialog";
+import api from "../services/api.js";
+import useInterviewSocket from "../hooks/useInterviewSocket.js";
+import InterviewLobby from "../components/interview/InterviewLobby.jsx";
+import AICard from "../components/interview/AICard.jsx";
+import AnswerPanel from "../components/interview/AnswerPanel.jsx";
+import InterviewHUD from "../components/interview/InterviewHUD.jsx";
+import EndInterviewDialog from "../components/interview/EndInterviewDialog.jsx";
 
 const RECOVERY_STORAGE_PREFIX = "mock-interview-recovery";
 

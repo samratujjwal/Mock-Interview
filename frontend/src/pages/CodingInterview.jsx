@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Editor from '@monaco-editor/react';
 import { Activity, Code2, Cpu, Fullscreen, Play, SendHorizonal, Sparkles, TimerReset, Wand2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { fetchCodingQuestion, optimizeCode, reviewCode, runCode, submitCode } from '../services/codingService';
+import { fetchCodingQuestion, optimizeCode, reviewCode, runCode, submitCode } from '../services/codingService.js';
 
 const LANGUAGES = [
   { value: 'javascript', label: 'JavaScript', monaco: 'javascript', starter: `function twoSum(nums, target) {

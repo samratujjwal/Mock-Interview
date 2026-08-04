@@ -1,7 +1,7 @@
 import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import useAuthStore from "../store/useAuthStore";
-import RouteFallback from "./common/RouteFallback";
+import useAuthStore from "../store/useAuthStore.js";
+import RouteFallback from "./common/RouteFallback.jsx";
 
 export default function ProtectedRoute({ children }) {
   const user = useAuthStore((s) => s.user);

@@ -1,9 +1,9 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
-import AppRoutes from "./routes/AppRoutes";
-import api from "./services/api";
-import { setAuthHeader } from "./utils/authHeader";
-import useAuthStore from "./store/useAuthStore";
+import AppRoutes from "./routes/AppRoutes.jsx";
+import api from "./services/api.js";
+import { setAuthHeader } from "./utils/authHeader.js";
+import useAuthStore from "./store/useAuthStore.js";
 
 const App = () => {
   React.useEffect(() => {

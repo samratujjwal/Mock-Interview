@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import api from '../services/api';
-import useAuthStore from '../store/useAuthStore';
+import api from '../services/api.js';
+import useAuthStore from '../store/useAuthStore.js';
 import { useNavigate } from 'react-router-dom';
 
 export default function Profile() {

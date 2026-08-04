@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import {
   MOBILE_PRIMARY_ITEMS,
   MOBILE_DRAWER_ITEMS,
-} from "../../constants/navigation";
+} from "../../constants/navigation.js";
 
 function NavItem({ label, to, icon: Icon, comingSoon, vertical }) {
   if (comingSoon) {
