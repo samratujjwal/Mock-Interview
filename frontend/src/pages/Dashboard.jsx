@@ -1,32 +1,39 @@
-import React, { useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { ArrowRight, Activity, Sparkles, ChartBar, TrendingUp, Trophy } from 'lucide-react';
-import useAuthStore from '../store/useAuthStore';
-import api from '../services/api';
-import { Button } from '@/components/ui/button';
+import React, { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import {
+  ArrowRight,
+  Activity,
+  Sparkles,
+  ChartBar,
+  TrendingUp,
+  Trophy,
+} from "lucide-react";
+import useAuthStore from "../store/useAuthStore";
+import api from "../services/api";
+import { Button } from "@/components/ui/button";
 
 const fetchDashboard = async () => {
-  const res = await api.get('/dashboard');
+  const res = await api.get("/dashboard");
   return res.data?.data?.summary || {};
 };
 
 const fetchWeekly = async () => {
-  const res = await api.get('/dashboard/weekly');
+  const res = await api.get("/dashboard/weekly");
   return res.data?.data || { weekly: [], meta: {} };
 };
 
 const fetchMonthly = async () => {
-  const res = await api.get('/dashboard/monthly');
+  const res = await api.get("/dashboard/monthly");
   return res.data?.data || { monthly: [], meta: {} };
 };
 
 const fetchStrongTopics = async () => {
-  const res = await api.get('/dashboard/topics/strong');
+  const res = await api.get("/dashboard/topics/strong");
   return res.data?.data?.topics || [];
 };
 
 const fetchWeakTopics = async () => {
-  const res = await api.get('/dashboard/topics/weak');
+  const res = await api.get("/dashboard/topics/weak");
   return res.data?.data?.topics || [];
 };
 
@@ -55,7 +62,10 @@ const buildBars = (data, valueKey, labelKey, fallbackLabel) => {
               <span>{formatHours(value)}</span>
             </div>
             <div className="mt-1 h-2 rounded-full bg-slate-200">
-              <div className="h-2 rounded-full bg-primary" style={{ width: `${percent}%` }} />
+              <div
+                className="h-2 rounded-full bg-primary"
+                style={{ width: `${percent}%` }}
+              />
             </div>
           </div>
         );
@@ -70,38 +80,87 @@ export default function Dashboard() {
     data: summary = {},
     isLoading: summaryLoading,
     isError: summaryError,
-  } = useQuery(['dashboard', 'summary'], fetchDashboard, { staleTime: 1000 * 60 * 5 });
+  } = useQuery({
+    queryKey: ["dashboard", "summary"],
+    queryFn: fetchDashboard,
+    staleTime: 1000 * 60 * 5,
+  });
 
   const {
     data: weeklyData = { weekly: [], meta: {} },
     isLoading: weeklyLoading,
-  } = useQuery(['dashboard', 'weekly'], fetchWeekly, { staleTime: 1000 * 60 * 5 });
+  } = useQuery({
+    queryKey: ["dashboard", "weekly"],
+    queryFn: fetchWeekly,
+    staleTime: 1000 * 60 * 5,
+  });
 
   const {
     data: monthlyData = { monthly: [], meta: {} },
     isLoading: monthlyLoading,
-  } = useQuery(['dashboard', 'monthly'], fetchMonthly, { staleTime: 1000 * 60 * 5 });
+  } = useQuery({
+    queryKey: ["dashboard", "monthly"],
+    queryFn: fetchMonthly,
+    staleTime: 1000 * 60 * 5,
+  });
 
-  const {
-    data: strongTopics = [],
-    isLoading: strongLoading,
-  } = useQuery(['dashboard', 'strongTopics'], fetchStrongTopics, { staleTime: 1000 * 60 * 5 });
+  const { data: strongTopics = [], isLoading: strongLoading } = useQuery({
+    queryKey: ["dashboard", "strongTopics"],
+    queryFn: fetchStrongTopics,
+    staleTime: 1000 * 60 * 5,
+  });
 
-  const {
-    data: weakTopics = [],
-    isLoading: weakLoading,
-  } = useQuery(['dashboard', 'weakTopics'], fetchWeakTopics, { staleTime: 1000 * 60 * 5 });
+  const { data: weakTopics = [], isLoading: weakLoading } = useQuery({
+    queryKey: ["dashboard", "weakTopics"],
+    queryFn: fetchWeakTopics,
+    staleTime: 1000 * 60 * 5,
+  });
 
-  const loading = summaryLoading || weeklyLoading || monthlyLoading || strongLoading || weakLoading;
+  const loading =
+    summaryLoading ||
+    weeklyLoading ||
+    monthlyLoading ||
+    strongLoading ||
+    weakLoading;
 
   const cards = useMemo(
     () => [
-      { label: 'Interviews', value: summary.totalInterviews ?? 0, icon: Activity, description: 'Completed interviews' },
-      { label: 'Practice Hours', value: formatHours(summary.practiceHours ?? 0), icon: Sparkles, description: 'Total practice time' },
-      { label: 'Average Score', value: `${summary.averageScore?.toFixed?.(1) ?? 0}%`, icon: TrendingUp, description: 'Performance score' },
-      { label: 'Streak', value: `${summary.streakDays ?? 0} days`, icon: Trophy, description: 'Active streak' },
-      { label: 'XP', value: summary.xp ?? 0, icon: ArrowRight, description: 'Experience points' },
-      { label: 'Level', value: summary.level ?? 1, icon: ChartBar, description: 'Current level' },
+      {
+        label: "Interviews",
+        value: summary.totalInterviews ?? 0,
+        icon: Activity,
+        description: "Completed interviews",
+      },
+      {
+        label: "Practice Hours",
+        value: formatHours(summary.practiceHours ?? 0),
+        icon: Sparkles,
+        description: "Total practice time",
+      },
+      {
+        label: "Average Score",
+        value: `${summary.averageScore?.toFixed?.(1) ?? 0}%`,
+        icon: TrendingUp,
+        description: "Performance score",
+      },
+      {
+        label: "Streak",
+        value: `${summary.streakDays ?? 0} days`,
+        icon: Trophy,
+        description: "Active streak",
+      },
+      {
+        label: "XP",
+        value: summary.xp ?? 0,
+        icon: ArrowRight,
+        description: "Experience points",
+      },
+      {
+        label: "Level",
+        value: summary.level ?? 1,
+        icon: ChartBar,
+        description: "Current level",
+      },
     ],
     [summary],
   );
@@ -111,12 +170,16 @@ export default function Dashboard() {
       <header className="rounded-3xl border border-slate-200/80 bg-white/80 p-6 shadow-sm shadow-slate-200/50 backdrop-blur-sm dark:border-slate-700/80 dark:bg-slate-950/80">
         <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">Dashboard</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">
+              Dashboard
+            </p>
             <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
-              Welcome back, {user?.name || 'interviewer'}.
+              Welcome back, {user?.name || "interviewer"}.
             </h1>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300">
-              Your practice summary, progress charts, and recommended actions are on this home page. Keep pushing your interview readiness forward.
+              Your practice summary, progress charts, and recommended actions
+              are on this home page. Keep pushing your interview readiness
+              forward.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -132,7 +195,8 @@ export default function Dashboard() {
 
       {summaryError ? (
         <div className="rounded-3xl border border-red-200 bg-red-50 p-6 text-sm text-red-800">
-          Unable to load dashboard data. Please refresh the page or try again later.
+          Unable to load dashboard data. Please refresh the page or try again
+          later.
         </div>
       ) : (
         <>
@@ -140,17 +204,26 @@ export default function Dashboard() {
             {cards.map((card) => {
               const Icon = card.icon;
               return (
-                <div key={card.label} className="rounded-3xl border border-slate-200/80 bg-white/90 p-6 shadow-sm dark:border-slate-700/80 dark:bg-slate-950/80">
+                <div
+                  key={card.label}
+                  className="rounded-3xl border border-slate-200/80 bg-white/90 p-6 shadow-sm dark:border-slate-700/80 dark:bg-slate-950/80"
+                >
                   <div className="flex items-center justify-between gap-4">
                     <div>
-                      <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{card.label}</p>
-                      <p className="mt-3 text-3xl font-semibold text-slate-900 dark:text-slate-100">{card.value}</p>
+                      <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+                        {card.label}
+                      </p>
+                      <p className="mt-3 text-3xl font-semibold text-slate-900 dark:text-slate-100">
+                        {card.value}
+                      </p>
                     </div>
                     <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary dark:bg-primary/20">
                       <Icon className="h-6 w-6" />
                     </div>
                   </div>
-                  <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">{card.description}</p>
+                  <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">
+                    {card.description}
+                  </p>
                 </div>
               );
             })}
@@ -160,8 +233,12 @@ export default function Dashboard() {
             <div className="space-y-4 rounded-3xl border border-slate-200/80 bg-white/90 p-6 shadow-sm dark:border-slate-700/80 dark:bg-slate-950/80">
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Weekly progress</h2>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">Track how many hours you practiced across recent weeks.</p>
+                  <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                    Weekly progress
+                  </h2>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                    Track how many hours you practiced across recent weeks.
+                  </p>
                 </div>
                 <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">
                   {weeklyData.weekly?.length || 0} weeks
@@ -175,19 +252,26 @@ export default function Dashboard() {
                 buildBars(
                   weeklyData.weekly.map((item) => ({
                     ...item,
-                    label: new Date(item.weekStart).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
+                    label: new Date(item.weekStart).toLocaleDateString(
+                      undefined,
+                      { month: "short", day: "numeric" },
+                    ),
                   })),
-                  'hours',
-                  'label',
-                  'No weekly practice logged yet.',
+                  "hours",
+                  "label",
+                  "No weekly practice logged yet.",
                 )
               )}
             </div>
 
             <div className="space-y-4 rounded-3xl border border-slate-200/80 bg-white/90 p-6 shadow-sm dark:border-slate-700/80 dark:bg-slate-950/80">
               <div>
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Strong topics</h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400">Areas where you are performing well.</p>
+                <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                  Strong topics
+                </h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  Areas where you are performing well.
+                </p>
               </div>
               {strongLoading ? (
                 <div className="rounded-3xl border border-dashed border-slate-300/80 bg-slate-50 p-6 text-center text-sm text-slate-500 dark:border-slate-700/80 dark:bg-slate-900/50">
@@ -196,14 +280,18 @@ export default function Dashboard() {
               ) : strongTopics.length ? (
                 <div className="grid gap-2">
                   {strongTopics.map((topic) => (
-                    <div key={topic} className="rounded-2xl bg-slate-100 px-4 py-3 text-sm font-medium text-slate-700 dark:bg-slate-900/80 dark:text-slate-100">
+                    <div
+                      key={topic}
+                      className="rounded-2xl bg-slate-100 px-4 py-3 text-sm font-medium text-slate-700 dark:bg-slate-900/80 dark:text-slate-100"
+                    >
                       {topic}
                     </div>
                   ))}
                 </div>
               ) : (
                 <div className="rounded-3xl border border-dashed border-slate-300/80 bg-slate-50 p-6 text-sm text-slate-500 dark:border-slate-700/80 dark:bg-slate-900/50">
-                  No strong topic data yet. Complete more interviews to unlock insights.
+                  No strong topic data yet. Complete more interviews to unlock
+                  insights.
                 </div>
               )}
             </div>
@@ -212,8 +300,12 @@ export default function Dashboard() {
           <section className="grid gap-4 xl:grid-cols-[0.6fr_1.4fr]">
             <div className="space-y-4 rounded-3xl border border-slate-200/80 bg-white/90 p-6 shadow-sm dark:border-slate-700/80 dark:bg-slate-950/80">
               <div>
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Weak topics</h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400">Focus on opportunities to improve.</p>
+                <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                  Weak topics
+                </h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  Focus on opportunities to improve.
+                </p>
               </div>
               {weakLoading ? (
                 <div className="rounded-3xl border border-dashed border-slate-300/80 bg-slate-50 p-6 text-center text-sm text-slate-500 dark:border-slate-700/80 dark:bg-slate-900/50">
@@ -222,22 +314,30 @@ export default function Dashboard() {
               ) : weakTopics.length ? (
                 <div className="grid gap-2">
                   {weakTopics.map((topic) => (
-                    <div key={topic} className="rounded-2xl bg-rose-100 px-4 py-3 text-sm font-medium text-rose-700 dark:bg-rose-950/50 dark:text-rose-200">
+                    <div
+                      key={topic}
+                      className="rounded-2xl bg-rose-100 px-4 py-3 text-sm font-medium text-rose-700 dark:bg-rose-950/50 dark:text-rose-200"
+                    >
                       {topic}
                     </div>
                   ))}
                 </div>
               ) : (
                 <div className="rounded-3xl border border-dashed border-slate-300/80 bg-slate-50 p-6 text-sm text-slate-500 dark:border-slate-700/80 dark:bg-slate-900/50">
-                  No weak topic data yet. Practice interviews to uncover weaker areas.
+                  No weak topic data yet. Practice interviews to uncover weaker
+                  areas.
                 </div>
               )}
             </div>
 
             <div className="space-y-4 rounded-3xl border border-slate-200/80 bg-white/90 p-6 shadow-sm dark:border-slate-700/80 dark:bg-slate-950/80">
               <div>
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Monthly practice</h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400">Recent performance over the last months.</p>
+                <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                  Monthly practice
+                </h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  Recent performance over the last months.
+                </p>
               </div>
               {monthlyLoading ? (
                 <div className="rounded-3xl border border-dashed border-slate-300/80 bg-slate-50 p-6 text-center text-sm text-slate-500 dark:border-slate-700/80 dark:bg-slate-900/50">
@@ -249,9 +349,9 @@ export default function Dashboard() {
                     ...item,
                     label: item.month,
                   })),
-                  'hours',
-                  'label',
-                  'No monthly practice logged yet.',
+                  "hours",
+                  "label",
+                  "No monthly practice logged yet.",
                 )
               )}
             </div>
@@ -260,8 +360,13 @@ export default function Dashboard() {
           <section className="rounded-3xl border border-slate-200/80 bg-white/90 p-6 shadow-sm dark:border-slate-700/80 dark:bg-slate-950/80">
             <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
               <div>
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Quick actions</h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400">Access your next interview, coding practice, or profile settings.</p>
+                <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                  Quick actions
+                </h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  Access your next interview, coding practice, or profile
+                  settings.
+                </p>
               </div>
               <div className="flex flex-wrap gap-3">
                 <Button asChild>
