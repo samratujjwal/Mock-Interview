@@ -1,16 +1,9 @@
-import React, { useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
-import {
-  ArrowRight,
-  Activity,
-  Sparkles,
-  ChartBar,
-  TrendingUp,
-  Trophy,
-} from "lucide-react";
-import useAuthStore from "../store/useAuthStore";
-import api from "../services/api";
-import { Button } from "@/components/ui/button";
+import React, { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { ArrowRight, Activity, Sparkles, ChartBar, TrendingUp, Trophy } from 'lucide-react';
+import useAuthStore from '../store/useAuthStore.js';
+import api from '../services/api.js';
+import { Button } from '@/components/ui/button';
 
 const fetchDashboard = async () => {
   const res = await api.get("/dashboard");

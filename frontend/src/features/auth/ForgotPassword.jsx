@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import api from '../../services/api';
+import api from '../../services/api.js';
 
 const schema = z.object({ email: z.string().email() });
 

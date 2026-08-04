@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
-import Sidebar from "../components/layout/Sidebar";
-import Navbar from "../components/layout/Navbar";
-import { MobileBottomNav, MobileDrawer } from "../components/layout/MobileNav";
-import useLogout from "../hooks/useLogout";
+import Sidebar from "../components/layout/Sidebar.jsx";
+import Navbar from "../components/layout/Navbar.jsx";
+import { MobileBottomNav, MobileDrawer } from "../components/layout/MobileNav.jsx";
+import useLogout from "../hooks/useLogout.js";
 
 export default function AppLayout() {
   const [collapsed, setCollapsed] = useState(false);

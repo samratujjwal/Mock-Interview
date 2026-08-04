@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Lightbulb, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import api from "../../services/api";
+import api from "../../services/api.js";
 
 export default function AnswerPanel({
   sessionId,

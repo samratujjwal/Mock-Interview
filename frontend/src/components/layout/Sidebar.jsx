@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { ChevronLeft, ChevronRight, LogOut, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { NAV_ITEMS } from "../../constants/navigation";
+import { NAV_ITEMS } from "../../constants/navigation.js";
 
 export default function Sidebar({ collapsed, onToggleCollapsed, onLogout }) {
   return (

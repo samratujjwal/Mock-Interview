@@ -4,7 +4,7 @@ import apiRouter from "./routes/index.js";
 import cookieParser from "./middleware/cookieParser.js";
 import requestId from "./middleware/requestId.js";
 import errorHandler from "./middleware/errorHandler.js";
-import AppError from "./utils/AppError.js";
+import AppError from "./utils/appError.js";
 import {
   helmetMiddleware,
   corsOptions,

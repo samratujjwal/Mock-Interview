@@ -1,4 +1,4 @@
-import api from './api';
+import api from './api.js';
 
 const buildQuestionPayload = ({ difficulty = 'medium', companyMode = 'product', topic = 'arrays', count = 1, useAi = true, persist = false } = {}) => ({
   difficulty,

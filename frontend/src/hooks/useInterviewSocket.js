@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import { createInterviewSocket } from "../services/socket";
-import useAuthStore from "../store/useAuthStore";
+import { createInterviewSocket } from "../services/socket.js";
+import useAuthStore from "../store/useAuthStore.js";
 
 const EMPTY_STATE = {
   connected: false,

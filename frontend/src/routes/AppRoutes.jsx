@@ -2,22 +2,22 @@ import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ProtectedRoute from "../components/ProtectedRoute";
-import RouteFallback from "../components/common/RouteFallback";
-import AuthLayout from "../layouts/AuthLayout";
-import AppLayout from "../layouts/AppLayout";
+import ProtectedRoute from "../components/ProtectedRoute.jsx";
+import RouteFallback from "../components/common/RouteFallback.jsx";
+import AuthLayout from "../layouts/AuthLayout.jsx";
+import AppLayout from "../layouts/AppLayout.jsx";
 
-const Signup = lazy(() => import("../features/auth/Signup"));
-const Login = lazy(() => import("../features/auth/Login"));
-const ForgotPassword = lazy(() => import("../features/auth/ForgotPassword"));
-const ResetPassword = lazy(() => import("../features/auth/ResetPassword"));
-const Dashboard = lazy(() => import("../pages/Dashboard"));
-const Profile = lazy(() => import("../pages/Profile"));
+const Signup = lazy(() => import("../features/auth/Signup.jsx"));
+const Login = lazy(() => import("../features/auth/Login.jsx"));
+const ForgotPassword = lazy(() => import("../features/auth/ForgotPassword.jsx"));
+const ResetPassword = lazy(() => import("../features/auth/ResetPassword.jsx"));
+const Dashboard = lazy(() => import("../pages/Dashboard.jsx"));
+const Profile = lazy(() => import("../pages/Profile.jsx"));
 const InterviewSetupWizard = lazy(
-  () => import("../features/interview/InterviewSetupWizard"),
+  () => import("../features/interview/InterviewSetupWizard.jsx"),
 );
-const LiveInterview = lazy(() => import("../pages/LiveInterview"));
-const CodingInterview = lazy(() => import("../pages/CodingInterview"));
+const LiveInterview = lazy(() => import("../pages/LiveInterview.jsx"));
+const CodingInterview = lazy(() => import("../pages/CodingInterview.jsx"));
 
 function HomePage() {
   return (

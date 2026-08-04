@@ -9,12 +9,7 @@ const envSchema = z.object({
     .default("development"),
   PORT: z.coerce.number().int().positive().default(5000),
 
-  MONGO_URI: z
-    .string({
-      required_error:
-        "MONGO_URI is required — set your MongoDB Atlas connection string.",
-    })
-    .min(1),
+  MONGO_URI: z.string().optional(),
   JWT_SECRET: z
     .string({ required_error: "JWT_SECRET is required." })
     .min(16, "JWT_SECRET should be at least 16 characters."),

@@ -5,10 +5,11 @@ mongoose.set("strictQuery", true);
 
 export async function connectDB() {
   const uri = process.env.MONGO_URI;
-  if (!uri) {
-    console.error("MONGO_URI is not set. Please set it in your environment.");
-    // Fail fast — configuration is required to run the app
-    process.exit(1);
+  
+  // Allow server to start without MongoDB for development/testing
+  if (!uri || process.env.SKIP_DB === 'true') {
+    console.warn("MongoDB connection skipped - server running without database");
+    return;
   }
 
   try {

@@ -1,6 +1,6 @@
 import { Bell, Menu, Moon, Search, Sparkles, Sun } from "lucide-react";
-import useAuthStore from "../../store/useAuthStore";
-import useTheme from "../../hooks/useTheme";
+import useAuthStore from "../../store/useAuthStore.js";
+import useTheme from "../../hooks/useTheme.jsx";
 
 export default function Navbar({ onOpenDrawer }) {
   const user = useAuthStore((s) => s.user);
